@@ -1,50 +1,220 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script type="text/javascript" src="../../js/jquery-3.6.1.js"></script>
+	</head>
+	<body>
+		<center>
+			<div id="">
+				
+				
+				<input type="color" name="colour" id="colour" value="" />
+			<select id="Thickness" name="Thickness" >
+						<option selected hidden disabled value="">--选择线条粗细--</option>
+						<option value="1">1</option>
+						<option value="5">5</option>
+						<option value="10">10</option>
+						<option value="15">15</option>
+					</select>
+			<select id="shape" name="shape" >
+								<option selected hidden disabled value="">--选择图形--</option>
+								<option value="1">线</option>
+								<option value="2">矩形</option>
+								<option value="3">椭圆</option>
+								<option value="4">圆</option>
+								<option value="5">三角形</option>
+								
+			</select>
+            <input type="button" name="eraserbutton"id="eraserbutton" value="橡皮擦"/>
+			<input type="button" id="clearbutton" value="清除">
+			</div>
+		<!-- 1.创建canvas元素 -->
+				<canvas id="myCanvas" width="600px" height="400px" style="border: 2px solid; margin-top: 20px; ">
+				</canvas>
+		</center>
+	</body>
+	<script type="text/javascript">
+			var canvas=document.getElementById("myCanvas");
+			var clearbutton =document.querySelector("#clearbutton");
+		var eraserbutton =document.querySelector("#eraserbutton");
+			var context =canvas.getContext("2d");
+			// 颜色选择
+			    var colour = document.querySelector("#colour");
+			    // 粗细选择
+			    var thickness = document.querySelector("#Thickness");
+				//图像选择
+				var shape=document.querySelector("#shape")
+			   //画笔当前的颜色
+			   var newColor =colour.value;
+			   // 画笔当前的粗细
+			   var newRange =thickness.value;  
+			 // 画笔当前的图像
+			 var newshape = shape.value;  
+			 var url = '';
+			   colour.addEventListener('change',()=>{
+			           newColor = colour.value;
+			          console.log(newColor)
+			          
+			       })
+				thickness.addEventListener('change',()=>{
+			           newRange = thickness.value;
+					    console.log("粗细"+newRange)
+			       })
+				shape.addEventListener('change',()=>{
+				        newshape = shape.value;
+				       console.log("形状"+newshape)
+				       
+				    })
+		
+		
+			//  线条
+			canvas.onmousedown=function(e){
+				let offstL = canvas.offsetLeft;
+				let offstT = canvas.offsetTop;
+				if(newshape==1){
+						context.moveTo(e.clientX-offstT,e.clientY-offstL);
+							// 开始本次绘画
+							context.beginPath();
+							// 线条颜色
+							        context.strokeStyle = newColor;
+							        //线条宽度
+							        context.lineWidth = newRange;
+							context.setLineDash([0]);
+							canvas.onmousemove = function(e){
+								context.lineTo(e.clientX-offstL,e.clientY-offstT);
+								context.stroke();
+							}
+							canvas.onmouseup = function () {
+								canvas.onmousemove = null;
+								url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
+							
+							}
+				}else if(newshape==2){
+				
+							 let X=e.clientX;
+							  let Y=e.clientY;
+							canvas.onmousemove = function(e){
+							context.clearRect(0, 0, canvas.width, canvas.height)
+							loadImage();
+							// 线条颜色
+							context.strokeStyle = newColor;
+							//线条宽度
+							context.lineWidth = newRange;
+							context.beginPath();
+							context.strokeRect(X-offstL,Y-offstT, e.clientX-X, e.clientY- Y);		                      
+							}            //鼠标移出时赋予空值，完成绘制   
+							canvas.onmouseup = function () {
+								canvas.onmousemove = null;
+								url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        
-    </style>
-</head>
-
-<body>
-    <div>
-    <input type="color" id="color" value="#ffc600" onchange="colorchange()">
-    <button id="clear">清除图像</button>    
-    </div>
-    
-    <!-- 一个canvas容器 -->
-    <canvas id="mycanvas" width="800px" height="500px" style="border: 1px solid pink;"></canvas>
-    <script>
-        
-        // 获取节点
-        var mycanvas = document.getElementById("mycanvas");
-        //   赋给2D属性
-        var cxt = mycanvas.getContext("2d");
-        //修改偏移量
-        var offleft = mycanvas.offsetLeft;
-        var offtop = mycanvas.offsetTop;
-        //绑定鼠标事件 点击按下
-        mycanvas.onmousedown = function (e) {
-            // 定义坐标
-            cxt.moveTo(e.clientX, e.clientY);
-            //   移动
-            mycanvas.onmousemove = function (e) {
-                // 定义路径
-                cxt.lineTo(e.clientX - offleft, e.clientY - offtop);
-                //  绘制当前路径   stroke()方法会实际地绘制出通过 moveTo() 和 lineTo()方法定义的路径
-                cxt.stroke();
-            }
-            //鼠标移出时赋予空值，完成绘制   
-            mycanvas.onmouseup = function () {
-                mycanvas.onmousemove = null;
-            }
-        }
-    </script>
-</body>
-
+							}
+					
+				}else if(newshape==3){
+					//橢圓
+					
+								
+									 let X=e.clientX;
+									  let Y=e.clientY;
+									canvas.onmousemove = function(e){
+											context.clearRect(0, 0, canvas.width, canvas.height)
+											loadImage();
+											// 线条颜色
+											context.strokeStyle = newColor;
+											//线条宽度
+											context.lineWidth = newRange;
+											context.beginPath();
+										 context.ellipse(Math.abs(-offstL+(e.clientX-X)/2),Math.abs(Y-offstT+(e.clientY-Y)/2),Math.abs(e.clientX-X),Math.abs(e.clientY-Y),0,0,Math.PI*2);
+										 context.stroke(); 
+									}
+									canvas.onmouseup = function(e){
+										
+										 // context.ellipse(X-offstL+(e.clientX-X)/2,Y-offstT+(e.clientY-Y)/2,e.clientX-X,e.clientY-Y,0,0,Math.PI*2);
+										 // context.stroke();
+									canvas.onmousemove = null;
+									url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
+									};
+								
+				}else if(newshape==4){
+				//圆
+								 let X=e.clientX;
+								  let Y=e.clientY;
+								canvas.onmousemove = function(e){
+									context.clearRect(0, 0, canvas.width, canvas.height)
+									loadImage();
+									// 线条颜色
+									context.strokeStyle = newColor;
+									//线条宽度
+									context.lineWidth = newRange;
+									context.beginPath();
+									context.arc(X-offstL+(e.clientX-X)/2,Y-offstT+(e.clientY-Y)/2,e.clientX-X,0,Math.PI*2,false)
+									context.stroke();
+								}
+								canvas.onmouseup = function(e){
+								canvas.onmousemove = null;
+								url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
+								};
+							
+				}else if(newshape==10){
+				console.log("当前使用的是橡皮擦")
+								
+								
+								 let X=e.clientX;
+								  let Y=e.clientY;	
+								canvas.onmousemove = function(e){
+									// context.clearRect(0, 0, canvas.width, canvas.height)
+									loadImage();
+									context.fillStyle  = "#ffffff";
+									context.strokeStyle = "pink";
+									context.beginPath();
+									url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
+									context.fillRect(e.clientX-offstL-25,e.clientY-offstT-15,50,30); 
+								}
+								canvas.onmouseup = function(e){
+									context.clearRect(e.clientX-offstL-26,e.clientY-offstT-16,52,32);
+									canvas.onmousemove = null;
+									url = $('canvas')[0].toDataURL(); // 每次 mouseup 都保存一次画布状态
+								};
+						
+				}
+				else{
+						
+							context.moveTo(e.clientX-offstT,e.clientY-offstL);
+							// 开始本次绘画
+							context.beginPath();
+						// 线条颜色
+						        context.strokeStyle = newColor;
+						        //线条宽度
+						        context.lineWidth = newRange;
+							context.setLineDash([0]);
+							canvas.onmousemove = function(e){
+								context.lineTo(e.clientX-offstL,e.clientY-offstT);
+								context.stroke();
+							}
+							canvas.onmouseup = function(e){
+							// 结束本次绘画
+							context.closePath();
+							canvas.onmousemove = null;
+						};	
+				}
+				
+		 }    		
+			clearbutton.onclick=function(){
+				  // clearRect() 函数可以指定起始点的x, y 位置以及宽度和高度来清除画布
+				 var w = canvas.width;
+				 var h = canvas.height;
+				 context.clearRect(0, 0, w, h);
+				 url="";
+				 }
+			eraserbutton.onclick=function(){
+				 	newshape=10;
+			};
+			 function loadImage() {
+			            var img = new Image();
+			            img.src = url;
+			            context.drawImage(img, 0, 0, canvas.width, canvas.height);
+			}
+			
+		</script>
 </html>
