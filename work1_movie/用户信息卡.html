@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息卡</title>
+</head>
+<body>
+    <h2>用户信息卡</h2>
+    <form>
+        <label>姓名：</label>
+        <input type="text" id="nameInput">
+        <button type="button" onclick="searchInfo()">查询</button>
+    </form>
+    <div id="userInfo"></div>
+    <script type="text/javascript">
+        // 存储用户信息
+        if (!localStorage.user1) {
+            localStorage.setItem("user1", JSON.stringify({
+                name: "张三",
+                age: "25",
+                email: "zhangsan@qq.com"
+            }));
+        }
+        if (!localStorage.user2) {
+            localStorage.setItem("user2", JSON.stringify({
+                name: "李四",
+                age: "30",
+                email: "lisi@qq.com"
+            }));
+        }
+        if (!localStorage.user3) {
+            localStorage.setItem("user3", JSON.stringify({
+                name: "王五",
+                age: "28",
+                email: "wangwu@qq.com"
+            }));
+        }
+
+        // 查询用户信息并显示
+        function searchInfo() {
+            var name = document.getElementById("nameInput").value;
+            var userInfo = document.getElementById("userInfo");
+            userInfo.innerHTML = "";
+            for (var i = 1; i <= 3; i++) {
+                var user = JSON.parse(localStorage.getItem("user" + i));
+                if (user.name === name) {
+                    userInfo.innerHTML += "<p>姓名：" + user.name + "</p>";
+                    userInfo.innerHTML += "<p>年龄：" + user.age + "</p>";
+                    userInfo.innerHTML += "<p>邮箱：" + user.email + "</p>";
+                    return;
+                }
+            }
+            userInfo.innerHTML = "<p>未查询到该用户的信息</p>";
+        }
+    </script>
+</body>
+</html>

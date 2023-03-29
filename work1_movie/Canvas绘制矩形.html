@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 1.创建canvas元素 -->
+    <canvas id="mycanvas" width="800" height="600" style="border: 1px solid pink;"></canvas>
+</body>
+    <script>
+        //2.创建画笔
+        let cav = document.querySelector("#mycanvas");
+        let cxt = cav.getContext('2d'); //画笔
+
+        cxt.rect(100,100,100,50);
+        cxt.fillStyle = "red"
+        cxt.fill(); //填充
+        cxt.stroke();
+        cxt.fillRect(100,200,100,50);
+        cxt.strokeRect(100,200,100,50);
+        cxt.clearRect(120,220,20,20);   //清除
+    </script>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>localStorage </title>
+	</head>
+	<!--  key和value都必须为字符串，
+	 web Storage的API只能操作字符串。 
+	 ****如果有相同的key，value会被后面的覆盖
+	 
+	 保存数据 localStorage.setItem( key , value ); 
+	读取数据：localStorage.getItem( key ); 
+	删除单个数据
+	localStorage.removeItem(  key  ); 
+	删除所有数据
+	localStorage.clear(); 
+	得到某个索引的key：
+	localStorage.key( index ); 
+	length属性：
+	localStorage.length 存储的“键值对”的数量。
+	 -->
+	<body>
+		<div id="">
+		<p>姓名：<input type="text" name="" id="username" value="" /></p>
+		<p>邮箱：<input type="email" name="" id="email" value="" /></p>
+		<p>年龄：<input type="number" name="" id="age" value="" /></p>
+		<input type="button" value="存数据" onclick="localSave()"/>
+		<input type="button" value="读数据" onclick="locatGet()"/>
+		<input type="button" value="改数据" onclick="localSave()"/>
+		<input type="button" value="删除数据" onclick="localDel()"/>
+		<input type="button" value="清除数据" onclick="localClear()"/>
+		</div>
+		<span id="details">
+			
+		</span>
+	</body>
+	<script type="text/javascript">
+	//let 避免变量声明提升
+	let username=document.querySelector("#username")
+	let email=document.querySelector("#email")
+	let age=document.querySelector("#age")
+	let details=document.querySelector("#details")
+		function locatGet(){
+		// 1.判断浏览器是否支持localStorage
+		if(window.localStorage){
+			//三种读取数据方式
+			details.innerHTML="姓名:"+localStorage.getItem("username")+"<br>"+
+								"邮箱:"+localStorage["email"]+"<br>"+
+								"年龄:"+localStorage.age
+		}
+		else{
+			alert("浏览器不支持")
+		}
+		}
+		function locatGet(){
+		// 1.判断浏览器是否支持localStorage
+		if(window.localStorage){
+			//三种读取数据方式
+			details.innerHTML="姓名"+localStorage.getItem("username")+"<br>"+
+								"邮箱"+localStorage["email"]+"<br>"+
+								"年龄"+localStorage.age
+        for(let i =0;i<localStorage.length;I++){
+            details.innerHTML +=localStorage.key(i)+":" +(localStorage.key(i))+"<br>"
+        }
+		}
+		else{
+			alert("浏览器不支持")
+		}
+		}
+		function localSave(){
+			// 1.判断浏览器是否支持localStorage
+			if(window.localStorage){
+				//三种存数据方式
+				localStorage.setItem("username",username.value);//key-value组合
+				localStorage["email"]=email.value;
+				localStorage.age=age.value;
+			}
+			else{
+				alert("浏览器不支持")
+			}
+		}
+
+        function localDel(){
+            //删除单个
+            localStorage.removeItem("age");
+            //删除全部
+            //localStorage.clear();
+        }
+        function localClear(){
+            localStorage.clear();
+        }
+	</script>
+<html>

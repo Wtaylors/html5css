@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 1.创建canvas元素 -->
+    <canvas id="mycanvas" width="800" height="600" style="border: 1px solid pink;"></canvas>
+</body>
+    <script>
+        //2.创建画笔
+        let cav = document.querySelector("#mycanvas");
+        let cxt = cav.getContext('2d'); //画笔
+
+
+        //3.绘制图形
+        //创建路径   绘制直线
+        cxt.moveTo(20,20);
+        cxt.lineTo(100,100);
+        //接着画就lineTO
+        cxt.lineTo(200,10);
+        cxt.closePath();   //封闭图形
+        //改变样式
+        //线条颜色
+        cxt.strokeStyle = "red";
+        //线条宽度
+        cxt.lineWidth = 5;
+        //线条首尾样式
+        cxt.lineCap = "round";
+        //线条连接处样式
+        cxt.lineJoin = "round";
+        //画虚线
+        cxt.setLineDash([10,20])  //第一个值是实线长度，第二个是虚线长度
+        //绘制线条
+        cxt.stroke();
+
+        cxt.beginPath();   //重新开始绘制
+        cxt.moveTo(20,20);
+        cxt.lineTo(400,100);
+        cxt.setLineDash([0]);
+        cxt.strokeStyle = "blue";
+        cxt.stroke();
+    </script>
+</html>

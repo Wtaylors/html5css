@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+     <!-- 控制按钮 -->
+    <div class="controls">
+        <button id="mainControl">播放</button>
+        <button id="stopControl" style="display: none;">暂停</button>
+        <button class="leftControl">快退</button>
+        <button class="rightControl">快进</button>
+        <div class="volume-icon" title="点击静音/恢复音量">
+            <i class="fa fa-volume-up"></i>
+        </div>
+    </div>
+
+    <!-- 时间显示 -->
+    <div class="time" id="songTime"></div>
+
+    <!-- 音频进度条 -->
+    <div class="progress-wrapper">
+        <div class="progress-buffered"></div>
+        <div class="progress"></div>
+    </div>
+
+    <!-- 音量控制条 -->
+    <div class="volume-wrapper">
+        <div class="volume"></div>
+        <div class="volume-icon" title="点击静音/恢复音量">
+            <i class="fa fa-volume-up"></i>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        let mysong = document.querySelector("#mysong");
+        let mainControl = document.querySelector("#mainControl");
+        let stopControl = document.querySelector("#stopControl");
+        let leftControl = document.querySelector(".leftControl");
+        let rightControl = document.querySelector(".rightControl");
+        let volumeIcon = document.querySelectorAll(".volume-icon");
+        let songTime = document.querySelector("#songTime");
+        let progressWrapper = document.querySelector(".progress-wrapper");
+        let progressBar = document.querySelector(".progress");
+        let bufferedBar = document.querySelector(".progress-buffered");
+        let volumeWrapper = document.querySelector(".volume-wrapper");
+        let volumeBar = document.querySelector(".volume");
+        let volume = 1;
+
+        songTime.innerHTML = formatTime(mysong.currentTime)
+            + " / " + formatTime(mysong.duration);
+
+        // 点击播放
+        mainControl.onclick = function () {
+            mysong.play();
+            mainControl.style.display = "none";
+            stopControl.style.display = "block";
+            setInterval(timeSpan, 1000);
+        };
+
+        // 点击暂停
+        stopControl.onclick = function () {
+            mysong.pause();
+            mainControl.style.display = "block";
+            stopControl.style.display = "none";
+        };
+
+        // 点击快退
+        leftControl.onclick = function () {
+            mysong.currentTime -= 30.0;
+        };
+
+        // 点击快进
+        rightControl.onclick = function () {
+            mysong.currentTime += 30.0;
+        };
+
+        // 点击静音/恢复音量
+        volumeIcon.forEach(function (icon) {
+            icon.onclick = function () {
+                if (mysong.volume > 0) {
+                    volume = mysong.volume;
+                    mysong.volume = 0;
+                    volumeBar.style.width = "0";
+                    icon.innerHTML = '<i class="fa fa-volume-off"></i>';
+                } else {
+                    mysong.volume = volume;
+                    volumeBar.style.width = volume * volumeWrapper.clientWidth + "px";
+                    icon.innerHTML = '<i class="fa fa-volume-up"></i>';
+                }
+            };
+        });
+
+        // 播放时间显示
+        function formatTime(time) {
+            let m = parseInt(time / 60);
+            let s = parseInt(time % 60);
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        // 播放时间+播放进度
+        function timeSpan() {
+            songTime.innerHTML = formatTime(mysong.currentTime)
+                + " / " + formatTime(mysong.duration);
+
+            let progressWidth = progressWrapper.clientWidth;
+            let buffered = mysong.buffered.end(0) / mysong.duration;
+            let currentTime = mysong.currentTime / mysong.duration;
+            progressBar.style.width = currentTime * progressWidth + "px";
+            bufferedBar.style.width = buffered * progressWidth + "px";
+
+            let volumeWidth = volumeWrapper.clientWidth;
+            volume = mysong.volume;
+            volumeBar.style.width = volume * volumeWidth + "px";
+        }
+
+        // 点击移动音频进度条
+        progressWrapper.onclick = function (e) {
+            let x = e.offsetX;
+            let width = progressWrapper.clientWidth;
+            let duration = mysong.duration;
+            mysong.currentTime = x / width * duration;
+        };
+
+        // 拖动音频进度条
+        progressBar.addEventListener("mousedown", function (e) {
+            let startX = e.clientX;
+            let progressWidth = progressWrapper.clientWidth;
+            let progressBarWidth = progressBar.clientWidth;
+            let duration = mysong.duration;
+
+            function mousemove(e) {
+                let moveX = e.clientX - startX;
+                let newWidth = (progressBarWidth + moveX) / progressWidth;
+                if (newWidth < 0) {
+                    newWidth = 0;
+                } else if (newWidth > 1) {
+                    newWidth = 1;
+                }
+                progressBar.style.width = newWidth * 100 + "%";
+                mysong.currentTime = newWidth * duration;
+            }
+
+            function mouseup() {
+                document.removeEventListener("mousemove", mousemove);
+                document.removeEventListener("mouseup", mouseup);
+            }
+
+            document.addEventListener("mousemove", mousemove);
+            document.addEventListener("mouseup", mouseup);
+        });
+
+        // 点击移动音量控制条
+        volumeWrapper.onclick = function (e) {
+            let x = e.offsetX;
+            let width = volumeWrapper.clientWidth;
+            mysong.volume = x / width;
+        };
+
+        // 拖动音量控制条
+        volumeBar.addEventListener("mousedown", function (e) {
+            let startX = e.clientX;
+            let volumeWidth = volumeWrapper.clientWidth;
+
+            function mousemove(e) {
+                let moveX = e.clientX - startX;
+                let newWidth = (volumeBar.clientWidth + moveX) / volumeWidth;
+                if (newWidth < 0) {
+                    newWidth = 0;
+                } else if (newWidth > 1) {
+                    newWidth = 1;
+                }
+                mysong.volume = newWidth;
+                volumeBar.style.width = newWidth * 100 + "%";
+            }
+
+            function mouseup() {
+                document.removeEventListener("mousemove", mousemove);
+                document.removeEventListener("mouseup", mouseup);
+            }
+
+            document.addEventListener("mousemove", mousemove);
+            document.addEventListener("mouseup", mouseup);
+        });
+    };
+</script>
+
+</html>

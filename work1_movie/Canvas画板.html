@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+    </style>
+</head>
+
+<body>
+    <div>
+    <input type="color" id="color" value="#ffc600" onchange="colorchange()">
+    <button id="clear">清除图像</button>    
+    </div>
+    
+    <!-- 一个canvas容器 -->
+    <canvas id="mycanvas" width="800px" height="500px" style="border: 1px solid pink;"></canvas>
+    <script>
+        
+        // 获取节点
+        var mycanvas = document.getElementById("mycanvas");
+        //   赋给2D属性
+        var cxt = mycanvas.getContext("2d");
+        //修改偏移量
+        var offleft = mycanvas.offsetLeft;
+        var offtop = mycanvas.offsetTop;
+        //绑定鼠标事件 点击按下
+        mycanvas.onmousedown = function (e) {
+            // 定义坐标
+            cxt.moveTo(e.clientX, e.clientY);
+            //   移动
+            mycanvas.onmousemove = function (e) {
+                // 定义路径
+                cxt.lineTo(e.clientX - offleft, e.clientY - offtop);
+                //  绘制当前路径   stroke()方法会实际地绘制出通过 moveTo() 和 lineTo()方法定义的路径
+                cxt.stroke();
+            }
+            //鼠标移出时赋予空值，完成绘制   
+            mycanvas.onmouseup = function () {
+                mycanvas.onmousemove = null;
+            }
+        }
+    </script>
+</body>
+
+</html>

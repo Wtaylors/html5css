@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Template</title>
+</head>
+<body>
+    <canvas id="mycanvas" width="800" height="600" style="border: 1px solid pink;"></canvas>
+</body>
+    <script>
+        //2.创建画笔
+        let cav = document.querySelector("#mycanvas");
+        let cxt = cav.getContext('2d'); //画笔
+
+        cxt.beginPath();
+        cxt.fillStyle = "red";
+        cxt.moveTo(200,200);
+        cxt.arc(200, 200, 100, Math.PI/180*0, Math.PI/180*108, false);
+        cxt.closePath();
+        cxt.fill();
+
+        cxt.beginPath();
+        cxt.fillStyle = "blue";
+        cxt.moveTo(200,200);
+        cxt.arc(200, 200, 100, Math.PI/180*108, Math.PI/180*216, false);
+        cxt.closePath();
+        cxt.fill();
+
+        cxt.beginPath();
+        cxt.fillStyle = "purple";
+        cxt.moveTo(200,200);
+        cxt.arc(200, 200, 100, Math.PI/180*216, Math.PI/180*360, false);
+        cxt.closePath();
+        cxt.fill();
+    </script>
+</body>
+</html>
