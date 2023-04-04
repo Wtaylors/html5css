@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>用户信息卡</title>
+	<style>
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+		}
+
+		form {
+			width: 400px;
+			margin: 0 auto;
+			text-align: center;
+			margin-top: 50px;
+		}
+
+		input[type="text"],
+		input[type="email"],
+		input[type="text"] {
+			display: block;
+			margin: 10px auto;
+			padding: 10px;
+			width: 100%;
+			max-width: 400px;
+			box-sizing: border-box;
+		}
+
+		input[type="submit"],
+		button {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		#result {
+			width: 400px;
+			margin: 0 auto;
+			text-align: center;
+			margin-top: 50px;
+		}
+
+		#query-btn {
+			text-align: center;
+
+		}
+	</style>
+</head>
+
+<body>
+	<h1>用户信息卡</h1>
+
+	<form>
+		<label for="username">Username:</label>
+		<input type="text" id="username" name="username">
+
+		<label for="email">Email:</label>
+		<input type="email" id="email" name="email">
+
+		<label for="phone">Phone:</label>
+		<input type="text" id="number" name="number">
+
+		<input type="submit" value="保存">
+		<hr>
+
+		<label for="query-username">按姓名查询</label>
+		<input type="text" id="query-username" name="query-username">
+		<button id="query-btn">查询</button>
+
+	</form>
+
+
+
+	<div id="result"></div>
+
+	<script>
+		// 获取表单元素
+		const form = document.querySelector('form');
+		const usernameInput = document.querySelector('#username');
+		const emailInput = document.querySelector('#email');
+		const numberInput = document.querySelector('#number');
+		const queryUsernameInput = document.querySelector('#query-username');
+
+		// 监听表单提交事件
+		form.addEventListener('submit', (event) => {
+			event.preventDefault(); // 阻止表单默认提交行为
+
+			const username = usernameInput.value.trim();
+			const email = emailInput.value.trim();
+			const number = numberInput.value.trim();
+
+			if (username === '' || email === '') {
+				return;
+			}
+
+			// 将用户信息保存到localStorage中
+			const user = { username, email, number};
+			localStorage.setItem(username, JSON.stringify(user));
+
+			// 显示保存成功的消息
+			const resultDiv = document.querySelector('#result');
+			resultDiv.innerHTML = `<p>User information for ${username} has been saved.</p>`;
+
+			// 清空表单
+			form.reset();
+		});
+
+		// 监听查询按钮点击事件
+		const queryBtn = document.querySelector('#query-btn');
+		queryBtn.addEventListener('click', () => {
+			const username = queryUsernameInput.value.trim();
+
+			if (username === '') {
+				return;
+			}
+
+			// 查询用户信息
+			const userJSON = localStorage.getItem(username);
+			if (userJSON !== null) {
+				const user = JSON.parse(userJSON);
+				const resultDiv = document.querySelector('#result');
+				resultDiv.innerHTML = `
+            <h2>用户信息</h2>
+            <p>Username: ${user.username}</p>
+            <p>Email: ${user.email}</p>
+			<p>Phone: ${user.number}</p>
+        `;
+			} else {
+				alert(`User ${username} not found.`);
+			}
+		});
+
+
+	</script>
+</body>
+
+</html>

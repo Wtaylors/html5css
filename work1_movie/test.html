@@ -1,70 +1,26 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>绘制画板</title>
-	</head>
-	<body>
-		<div class="">
-			<input type="color" value="#ff5821" id="color"/>
-			<input type="range" class="range" min="1" max="20" value="1" id="cu">
-			<button type="button" id="cls">清除图像</button>
-			<button type="button" id="rectangle">绘制矩形</button>
-			<button type="button" id="round">绘制圆</button>
-		</div>
-		<canvas id="canvas" width="600" height=500" style="border: 2px #221818 solid;">
-			
-		</canvas>
-		<script type="text/javascript">
-			let color = document.querySelector("#color");
-			let cls = document.querySelector("#cls");
-			let canvas = document.querySelector("#canvas");
-			let cu = document.querySelector("#cu");
-			let cxt = canvas.getContext('2d');
-			let rectangle = document.querySelector("#rectangle");
-			let round = document.querySelector("#round");
-			
-			let offstL = canvas.offsetLeft;
-			let offstT = canvas.offsetTop;
-			
-			canvas.onmousedown=function(e){
-				cxt.moveTo(e.clientX-offstL,e.clientY-offstT);
-				cxt.beginPath();
-				cxt.strokeStyle = color.value;
-				cxt.lineWidth= cu.value;
-				canvas.onmousemove = function(e){
-					cxt.lineTo(e.clientX-offstL,e.clientY-offstT);
-					cxt.stroke();
-				}
-				
-			};
-			canvas.onmouseup = function(e){
-				cxt.closePath();
-				canvas.onmousemove = null;
-			};
-			rectangle.onclick = function(){
-				cxt.beginPath();
-				cxt.fillStyle=color.value;
-				
-				cxt.fillRect(100,150,100,300)
-				cxt.fill();
-				cxt.closePath()
-				cxt.stroke();
-			};
-			round.onclick = function(){
-				cxt.beginPath();
-				cxt.fillStyle=color.value;
-				cxt.arc(500,200,150,0,Math.PI/180*360,true);
-				cxt.closePath();
-				cxt.fill();
-				// cxt.stroke();
-			}
-			cls.onclick = function(){
-				cxt.clearRect(0,0,canvas.width, canvas.height);
-				console.log("画板内容被清除")
-			}
-			
-		</script>
-	</body>
-</html>
-
+<style>
+.poem {
+	width: 200px;
+	height: 300px;
+	margin: auto;
+	}
+	li {
+	list-style: none;
+	margin-left: -40px;
+	}
+	
+   </style>
+   <div class="poem">
+	<h1>武陵春·春晚</h1>
+	<p> [宋] 李清照</p>
+	<ul>
+	<li>风住尘香花已尽，</li>
+	<li>日晚倦梳头。</li>
+	<li>物是人非事事休，</li>
+	<li>欲语泪先流。</li>
+	<li>闻说双溪春尚好，</li>
+	<li>也拟泛轻舟。</li>
+	<li>只恐双溪舴艋舟，</li>
+	<li>载不动、许多愁。</li>
+	</ul>
+   </div>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<h1>indexed Database</h1>
+		<input type="button" value="创建数据库" onclick="creatDb()">
+		<input type="button" value="关闭数据库" id="closebnt">
+		<input type="button" value="创建表" onclick="creatTable()">
+		<hr>
+		<fieldset>
+		    <legend>用户信息</legend>
+		    <table>
+		        <tr>
+		            <td>学号：<input type="text" id="code"></td>
+		            <td>姓名：<input type="text" id="name"></td>
+		        </tr>
+		        <tr>
+		            <td><input type="button" onclick="save()" value="保存"></td>           
+		        </tr>
+		    </table>
+		</fieldset>
+		<hr>
+		<input type="button" value="查询表" onclick="seach()">
+		<table border="1" id="mytable">
+		    <tr>
+		        <td width='200'>学号</td>
+		        <td width='100'>姓名</td>
+		        <td width='200'>操作</td>
+		    </tr>      
+		</table>  
+		<hr>
+		<input type="button" value="删除表" onclick="dropTable()">
+	</body>
+	<script>
+		let dbReq;
+		let code = document.querySelector("#code");  //拿到页面的值
+		let name = document.querySelector("#name");
+		//创建数据库
+		function creatDb(){
+			dbReq = indexedDB.open("user",1);
+			//成功
+			dbReq.onsuccess = function(){
+				alert("创建数据库成功");
+			}
+			//失败
+			dbReq.onerror = function(){
+				alert("创建数据库失败")
+			}
+		}
+
+		//创建对象仓库
+		function creatTable(){
+			//1.更新数据库版本
+			dbReq = indexedDB.open("user",2);
+			//处理版本更新事件
+			dbReq.onupgradeneeded = function(){
+				//3.获取数据库实例对象
+				let db = this.result;
+				//4.创建对象仓库
+				let items={
+					keyPath:"UID", //主键名称
+					autoIncrement:true //是否自增长
+				}
+				let store = db.createObjectStore("student",items);
+				//5.创建索引
+				store.createIndex("codeIndex","code",{unique:false});
+				store.createIndex("nameIndex","name",{unique:false});
+				//6.关闭
+				db.close();
+			}
+		}
+		//保存数据
+		function save(){
+			
+			//1.打开数据库
+			dbReq = indexedDB.open("user");
+			//2.处理成功事件，创建事务
+			dbReq.onsuccess = function(){
+				//获取数据库实例
+				let db = this.result;
+				//3.创建事务
+				let tx = db.transaction("student","readwrite");//操作两个数组
+				//4.获得对象仓库
+				let store = tx.objectStore("student");
+				//5.存数据
+				let data = {"code":code.value,"name":name.value};
+				store.add(data);
+				//6.关闭数据库
+				db.close();
+			}
+		}
+
+		function seach(){
+			//1.打开数据库
+			dbReq = indexedDB.open("user");
+			//2.处理成功事件，创建事务
+			dbReq.onsuccess = function(){
+				//获取数据库实例
+				let db = this.result;
+				//3.创建事务
+				let tx = db.transaction("student","readwrite");//操作两个数组
+				//4.获得对象仓库
+				let store = tx.objectStore("student")
+				//5.创建游标
+				let curReq = store.openCursor();
+				//6.获取数据
+				curReq.onsuccess = function(){
+					let cur = this.result;
+					if(cur){
+						console.log(cur.value);
+						cur.continue()
+
+					}
+				}
+				//6.关闭数据库
+				db.close();
+			}
+		}
+	</script>
+</html>
